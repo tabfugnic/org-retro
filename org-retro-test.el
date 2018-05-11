@@ -33,13 +33,13 @@
 
 (ert-deftest org-retro-create-plus-one-test ()
   (with-temp-buffer
-    (insert "foo")
+    (insert "foo\nthing")
     (goto-char (point-min))
     (org-retro-increment-number-inline)
     (should
      (equal
       (thing-at-point 'line t)
-      "foo +1"))))
+      "foo +1\n"))))
 
 (ert-deftest org-retro-increment-number-test ()
   (with-temp-buffer

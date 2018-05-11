@@ -40,9 +40,10 @@
   "Mode for making retrospectives easier to run")
 
 (defun org-retro-increment-number-inline (&optional number)
+  (interactive)
   (or number (setq number 1))
   (let ((current-point (point)))
-    (goto-char (point-max))
+    (end-of-line)
     (skip-chars-backward "0-9")
     (if (looking-at "[0-9]+")
         (replace-match (number-to-string (+ number (string-to-number (match-string 0)))))
