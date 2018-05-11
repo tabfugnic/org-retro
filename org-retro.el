@@ -32,9 +32,14 @@
 
 ; Customizable variables
 (defgroup org-retro nil
-  "Settings for retrospectives"
+  "Settings for retrospectives."
   :version "0.1.0"
   :group 'applications)
+
+(defcustom org-retro-presentation-scale 4
+  "Set presentation height that allows better viewing on small screens."
+  :type 'integer
+  :group 'retro)
 
 (define-derived-mode org-retro-mode org-mode "Retrospective"
   "Mode for making retrospectives easier to run")
@@ -55,8 +60,16 @@
   (org-retro-increment-number-inline
    (string-to-number (read-string "Enter amount: "))))
 
+(defun org-retro-presentation-toggle ()
+  (interactive)
+  (if (zerop text-scale-mode-amount)
+      (text-scale-adjust org-retro-presentation-scale)
+    (text-scale-adjust 0)))
+
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
+
 (define-key org-retro-mode-map (kbd "C-c u") 'org-retro-increment-number-inline)
 (define-key org-retro-mode-map (kbd "C-c C-u") 'org-retro-increment-number-inline-by-amount)
+(define-key org-retro-mode-map (kbd "C-c M-p") 'org-retro-presentation-toggle)
 
 (provide 'org-retro)
