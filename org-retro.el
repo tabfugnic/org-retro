@@ -39,12 +39,15 @@
 (define-derived-mode org-retro-mode org-mode "Retrospective"
   "Mode for making retrospectives easier to run")
 
-(defun org-retro-increment-number-inline ()
- (goto-char (point-max))
- (skip-chars-backward "0-9")
- (if (looking-at "[0-9]+")
-     (replace-match (number-to-string (1+ (string-to-number (match-string 0)))))
-   (insert " +1")))
+(defun org-retro-increment-number-inline (&optional number)
+  (or number (setq number 1))
+  (let ((current-point (point)))
+    (goto-char (point-max))
+    (skip-chars-backward "0-9")
+    (if (looking-at "[0-9]+")
+        (replace-match (number-to-string (+ number (string-to-number (match-string 0)))))
+      (insert (format " +%d" number)))
+    (goto-char current-point)))
 
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
 

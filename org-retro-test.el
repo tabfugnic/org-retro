@@ -60,3 +60,24 @@
      (equal
       (thing-at-point 'line t)
       "foo +1 bar +6"))))
+
+(ert-deftest org-retro-increment-number-by-input-test ()
+  (with-temp-buffer
+    (insert "foo +4")
+    (goto-char (point-min))
+    (org-retro-increment-number-inline 10)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "foo +14"))))
+
+(ert-deftest org-retro-increment-number-keeps-current-pointer-location-test ()
+  (with-temp-buffer
+    (let ((test-point (1+ (point-min))))
+      (insert "foo +4")
+      (goto-char test-point)
+      (org-retro-increment-number-inline 10)
+      (should
+       (equal (point) test-point)))))
+
+;;; org-retro-test.el ends here
