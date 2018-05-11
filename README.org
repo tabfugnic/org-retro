@@ -1,0 +1,20 @@
+* Org Retro
+
+=org-retro= is software that helps make retros easier to run.
+
+Using [[https://orgmode.org][orgmode]] as a base it extends it to provide a better presentation
+experience and shortcuts to do basic tasks.
+
+** Installation
+
+Add =org-retro.el= to your load path and enable it.
+
+#+BEGIN_SRC emacs-lisp
+(require 'org-retro)
+#+END_SRC
+
+Open any *.retro file
+
+** Configuration
+
+TODO.
