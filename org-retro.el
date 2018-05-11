@@ -50,6 +50,13 @@
       (insert (format " +%d" number)))
     (goto-char current-point)))
 
+(defun org-retro-increment-number-inline-by-amount ()
+  (interactive)
+  (org-retro-increment-number-inline
+   (string-to-number (read-string "Enter amount: "))))
+
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
+(define-key org-retro-mode-map (kbd "C-c u") 'org-retro-increment-number-inline)
+(define-key org-retro-mode-map (kbd "C-c C-u") 'org-retro-increment-number-inline-by-amount)
 
 (provide 'org-retro)
