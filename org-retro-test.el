@@ -33,13 +33,23 @@
 
 (ert-deftest org-retro-create-plus-one-test ()
   (with-temp-buffer
-    (insert "foo\nthing")
+    (insert "foo 495")
     (goto-char (point-min))
     (org-retro-increment-number-inline)
     (should
      (equal
       (thing-at-point 'line t)
-      "foo +1\n"))))
+      "foo 495 +1"))))
+
+(ert-deftest org-retro-create-plus-one-test-with-additional-line ()
+  (with-temp-buffer
+    (insert "foo 495\nthing")
+    (goto-char (point-min))
+    (org-retro-increment-number-inline)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "foo 495 +1\n"))))
 
 (ert-deftest org-retro-increment-number-test ()
   (with-temp-buffer
@@ -50,6 +60,26 @@
      (equal
       (thing-at-point 'line t)
       "foo +2"))))
+
+(ert-deftest org-retro-create-plus-one-with-plus-at-end-test ()
+  (with-temp-buffer
+    (insert "foo +")
+    (goto-char (point-min))
+    (org-retro-increment-number-inline)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "foo + +1"))))
+
+(ert-deftest org-retro-create-plus-one-when-math-test ()
+  (with-temp-buffer
+    (insert "learned the value of x+1")
+    (goto-char (point-min))
+    (org-retro-increment-number-inline)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "learned the value of x+1 +1"))))
 
 (ert-deftest org-retro-increment-number-in-strange-string-test ()
   (with-temp-buffer

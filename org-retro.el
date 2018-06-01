@@ -49,10 +49,12 @@
   (or number (setq number 1))
   (let ((current-point (point)))
     (end-of-line)
-    (skip-chars-backward "0-9")
-    (if (looking-at "[0-9]+")
-        (replace-match (number-to-string (+ number (string-to-number (match-string 0)))))
-      (insert (format " +%d" number)))
+    (skip-chars-backward "+0-9")
+    (backward-char)
+    (if (looking-at " \\+[0-9]+$")
+        (replace-match
+         (format " +%d" (+ number (string-to-number (match-string 0)))))
+      (org-retro-insert-number-at-end-of-line number))
     (goto-char current-point)))
 
 (defun org-retro-increment-number-inline-by-amount ()
@@ -65,6 +67,10 @@
   (if (zerop text-scale-mode-amount)
       (text-scale-adjust org-retro-presentation-scale)
     (text-scale-adjust 0)))
+
+(defun org-retro-insert-number-at-end-of-line (number)
+  (end-of-line)
+  (insert (format " +%d" number)))
 
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
 
