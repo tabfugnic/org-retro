@@ -1,0 +1,24 @@
+base_job: &base_job
+  working_directory: "~/org-retro"
+  steps:
+    - checkout
+    - run:
+        name: Run ERT tests
+        command: ./bin/test
+jobs:
+  emacs26:
+    <<: *base_job
+    docker:
+      - image: silex/emacs:26-alpine
+
+  emacs25:
+    <<: *base_job
+    docker:
+      - image: silex/emacs:25-alpine
+
+workflows:
+  version: 2
+  emacs-versions:
+    jobs:
+      - emacs26
+      - emacs25
