@@ -28,6 +28,7 @@
 ;;; Code:
 
 (load-file "./org-retro.el")
+(require 'org)
 (require 'org-retro)
 (require 'ert)
 
@@ -118,5 +119,42 @@
     (org-retro-presentation-toggle)
     (should
      (= text-scale-mode-amount 0))))
+
+(ert-deftest org-retro-navigate-to-narrowed-sections-test ()
+  (with-temp-buffer
+    (insert "* Joys\n- thing\n* Deltas\n- stuff")
+    (goto-char (point-min))
+    (org-narrow-to-subtree)
+    (org-retro-next-subtree)
+    (should
+     (equal
+      (buffer-string)
+      "* Deltas\n- stuff"))
+    (org-retro-previous-subtree)
+    (should
+     (equal
+      (buffer-string)
+      "* Joys\n- thing"))))
+
+(ert-deftest org-retro-navigating-beyond-narrowed-section-test ()
+  (with-temp-buffer
+    (insert "* Joys\n- thing\n")
+    (goto-char (1+ (point-min)))
+    (org-narrow-to-subtree)
+    (should-error
+     (org-retro-next-subtree)
+      :type 'end-of-buffer)
+    (goto-char (1+ (point-min)))
+    (should-error
+     (org-retro-previous-subtree)
+      :type 'beginning-of-buffer)))
+
+(ert-deftest org-retro-final-subtree-test ()
+  (with-temp-buffer
+    (insert "* Joys\n- thing\n")
+    (should
+     (org-retro-first-subtree-p))
+    (should
+     (org-retro-last-subtree-p))))
 
 ;;; org-retro-test.el ends here

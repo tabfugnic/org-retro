@@ -30,6 +30,8 @@
 
 ;;; Code:
 
+(require 'org)
+
 ; Customizable variables
 (defgroup org-retro nil
   "Settings for retrospectives."
@@ -85,16 +87,58 @@ Default size increase is set to 4."
       (text-scale-set org-retro-presentation-scale)
     (text-scale-set 0)))
 
+(defun org-retro-next-subtree (&optional number)
+  "Move point down to next subtree by NUMBER.
+Signal if unable to move in that direction.
+When NUMBER is negative, move point up instead."
+  (interactive)
+  (let ((number (or number 1)))
+    (widen)
+    (when (and (org-retro-first-subtree-p) (< number 0))
+      (org-narrow-to-subtree)
+      (signal 'beginning-of-buffer nil))
+    (when (and (org-retro-last-subtree-p) (> number 0))
+      (org-narrow-to-subtree)
+      (signal 'end-of-buffer nil))
+    (outline-next-visible-heading number)
+    (org-narrow-to-subtree)))
+
+(defun org-retro-previous-subtree ()
+  "Move point to previous subtree."
+  (interactive)
+  (org-retro-next-subtree -1))
+
 (defun org-retro-insert-number-at-end-of-line (number)
   "Non interactive function to insert a NUMBER at the end of the line."
   (end-of-line)
   (insert (format " +%d" number)))
 
+(defun org-retro-first-subtree-p ()
+  "Check if current pointing to the first subtree."
+  (save-excursion
+    (org-back-to-heading)
+    (let ((current-heading (org-current-line-string)))
+      (outline-previous-heading)
+      (string= (org-current-line-string) current-heading))))
+
+(defun org-retro-last-subtree-p ()
+  "Check if current pointing to the last subtree."
+  (save-excursion
+    (org-back-to-heading)
+    (let ((current-heading (org-current-line-string)))
+      (outline-next-heading)
+      (and
+       (not (string= (org-current-line-string) current-heading))
+       (not (org-at-heading-p))))))
+
+
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
 
 (define-key org-retro-mode-map (kbd "C-c u") 'org-retro-increment-number-inline)
 (define-key org-retro-mode-map (kbd "C-c C-u") 'org-retro-increment-number-inline-by-amount)
-(define-key org-retro-mode-map (kbd "C-c M-p") 'org-retro-presentation-toggle)
+(define-key org-retro-mode-map (kbd "C-c C-<return>") 'org-retro-presentation-toggle)
+(define-key org-retro-mode-map (kbd "C-c M-n") 'org-retro-next-subtree)
+(define-key org-retro-mode-map (kbd "C-c M-p") 'org-retro-previous-subtree)
 
 (provide 'org-retro)
 
