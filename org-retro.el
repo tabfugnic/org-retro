@@ -42,9 +42,13 @@
   :group 'retro)
 
 (define-derived-mode org-retro-mode org-mode "Retrospective"
-  "Mode for making retrospectives easier to run")
+  "Mode for making retrospectives easier to run.")
 
 (defun org-retro-increment-number-inline (&optional number)
+  "Increment by NUMBER at the end of line.
+When this is the first attempt to increment,
+add NUMBER to the end of line with the format ' +NUMBER'.
+If optional NUMBER is not provided, default to 1."
   (interactive)
   (or number (setq number 1))
   (let ((current-point (point)))
@@ -58,17 +62,22 @@
     (goto-char current-point)))
 
 (defun org-retro-increment-number-inline-by-amount ()
+  "Increment at the end of the line by input amount."
   (interactive)
   (org-retro-increment-number-inline
    (string-to-number (read-string "Enter amount: "))))
 
 (defun org-retro-presentation-toggle ()
+  "Toggle presentation mode.
+Using text-scale increase text size by configurable amount.
+Default size increase is set to 4."
   (interactive)
   (if (or (not (boundp 'text-scale-mode-amount))(zerop text-scale-mode-amount))
       (text-scale-set org-retro-presentation-scale)
     (text-scale-set 0)))
 
 (defun org-retro-insert-number-at-end-of-line (number)
+  "Non interactive function to insert a NUMBER at the end of the line."
   (end-of-line)
   (insert (format " +%d" number)))
 
@@ -79,3 +88,5 @@
 (define-key org-retro-mode-map (kbd "C-c M-p") 'org-retro-presentation-toggle)
 
 (provide 'org-retro)
+
+;;; org-retro.el ends here
