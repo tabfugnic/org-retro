@@ -110,4 +110,13 @@
       (should
        (equal (point) test-point)))))
 
+(ert-deftest org-retro-presentation-toggle-test ()
+  (with-temp-buffer
+    (org-retro-presentation-toggle)
+    (should
+     (> text-scale-mode-amount 0))
+    (org-retro-presentation-toggle)
+    (should
+     (= text-scale-mode-amount 0))))
+
 ;;; org-retro-test.el ends here

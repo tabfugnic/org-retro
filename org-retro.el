@@ -64,9 +64,9 @@
 
 (defun org-retro-presentation-toggle ()
   (interactive)
-  (if (zerop text-scale-mode-amount)
-      (text-scale-adjust org-retro-presentation-scale)
-    (text-scale-adjust 0)))
+  (if (or (not (boundp 'text-scale-mode-amount))(zerop text-scale-mode-amount))
+      (text-scale-set org-retro-presentation-scale)
+    (text-scale-set 0)))
 
 (defun org-retro-insert-number-at-end-of-line (number)
   (end-of-line)
