@@ -55,21 +55,34 @@ with the format ' +NUMBER'.
 If optional NUMBER is not provided, default to 1."
   (interactive)
   (or number (setq number 1))
-  (let ((current-point (point)))
-    (end-of-line)
-    (skip-chars-backward "+0-9")
-    (backward-char)
+  (org-retro-goto-number (lambda()
     (if (looking-at " \\+[0-9]+$")
         (replace-match
-         (format " +%d" (+ number (string-to-number (match-string 0)))))
-      (org-retro-insert-number-at-end-of-line number))
-    (goto-char current-point)))
+         (format " %+d" (+ number (string-to-number (match-string 0)))))
+      (org-retro-insert-number-at-end-of-line number)))))
 
 (defun org-retro-increment-number-inline-by-amount ()
   "Increment at the end of the line by input amount."
   (interactive)
   (org-retro-increment-number-inline
    (string-to-number (read-string "Enter amount: "))))
+
+(defun org-retro-clear-number ()
+  "Clear +number at the end of the line."
+  (interactive)
+  (org-retro-goto-number
+   (lambda ()
+     (when (looking-at " \\+[0-9]+$")
+       (replace-match "")))))
+
+(defun org-retro-goto-number (numfunc)
+  "Execute NUMFUNC around work to get number."
+  (let ((current-point (point)))
+    (end-of-line)
+    (skip-chars-backward "+0-9")
+    (backward-char)
+    (funcall numfunc)
+    (goto-char current-point)))
 
 (defun org-retro-presentation-toggle ()
   "Toggle presentation mode.
@@ -113,7 +126,7 @@ Signal when unable to move point in the direction."
 (defun org-retro-insert-number-at-end-of-line (number)
   "Non interactive function to insert a NUMBER at the end of the line."
   (end-of-line)
-  (insert (format " +%d" number)))
+  (insert (format " %+d" number)))
 
 (defun org-retro-first-subtree-p ()
   "Check if current pointing to the first subtree."
@@ -141,6 +154,7 @@ Signal when unable to move point in the direction."
 (define-key org-retro-mode-map (kbd "C-c r <return>") 'org-retro-presentation-toggle)
 (define-key org-retro-mode-map (kbd "C-c r n") 'org-retro-next-subtree)
 (define-key org-retro-mode-map (kbd "C-c r p") 'org-retro-previous-subtree)
+(define-key org-retro-mode-map (kbd "C-c r c") 'org-retro-clear-number)
 
 (provide 'org-retro)
 

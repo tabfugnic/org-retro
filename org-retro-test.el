@@ -111,6 +111,36 @@
       (should
        (equal (point) test-point)))))
 
+(ert-deftest org-retro-increment-number-goes-negative-test ()
+  (with-temp-buffer
+    (insert "foo +1")
+    (goto-char (point-min))
+    (org-retro-increment-number-inline -2)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "foo -1"))))
+
+(ert-deftest org-retro-increment-by-negative-create-test ()
+  (with-temp-buffer
+    (insert "foo 495")
+    (goto-char (point-min))
+    (org-retro-increment-number-inline -1)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "foo 495 -1"))))
+
+(ert-deftest org-retro-clear-number-test ()
+  (with-temp-buffer
+    (insert "foo 495 +1")
+    (goto-char (point-min))
+    (org-retro-clear-number)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "foo 495"))))
+
 (ert-deftest org-retro-presentation-toggle-test ()
   (with-temp-buffer
     (org-retro-presentation-toggle)
