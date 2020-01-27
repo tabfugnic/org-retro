@@ -136,11 +136,11 @@ Signal when unable to move point in the direction."
 
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
 
-(define-key org-retro-mode-map (kbd "C-c u") 'org-retro-increment-number-inline)
-(define-key org-retro-mode-map (kbd "C-c C-u") 'org-retro-increment-number-inline-by-amount)
-(define-key org-retro-mode-map (kbd "C-c C-<return>") 'org-retro-presentation-toggle)
-(define-key org-retro-mode-map (kbd "C-c M-n") 'org-retro-next-subtree)
-(define-key org-retro-mode-map (kbd "C-c M-p") 'org-retro-previous-subtree)
+(define-key org-retro-mode-map (kbd "C-u") 'org-retro-increment-number-inline)
+(define-key org-retro-mode-map (kbd "C-M-u") 'org-retro-increment-number-inline-by-amount)
+(define-key org-retro-mode-map (kbd "C-c r <return>") 'org-retro-presentation-toggle)
+(define-key org-retro-mode-map (kbd "C-c r n") 'org-retro-next-subtree)
+(define-key org-retro-mode-map (kbd "C-c r p") 'org-retro-previous-subtree)
 
 (provide 'org-retro)
 
