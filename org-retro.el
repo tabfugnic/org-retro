@@ -1,7 +1,7 @@
 ;;; org-retro.el --- Make retros easier to run
 
 ;; Author: Eric J. Collins <eric@tabfugni.cc>
-;; Version: 0.1.0
+;; Version: 0.3.0
 ;; Keywords: org, retro
 ;; URL: https://github.com/thoughtbot/org-retro/org-retro.el
 
@@ -35,7 +35,7 @@
 ; Customizable variables
 (defgroup org-retro nil
   "Settings for retrospectives."
-  :version "0.1.0"
+  :version "0.3.0"
   :group 'applications)
 
 (defcustom org-retro-presentation-scale 4
@@ -89,8 +89,10 @@ Default size increase is set to 4."
 
 (defun org-retro-next-subtree (&optional number)
   "Move point down to next subtree by NUMBER.
-Signal if unable to move in that direction.
-When NUMBER is negative, move point up instead."
+
+When NUMBER is negative, move point up instead.
+
+Signal when unable to move point in the direction."
   (interactive)
   (let ((number (or number 1)))
     (widen)
