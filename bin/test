@@ -1,3 +1,6 @@
-#!/bin/sh
+#!/usr/bin/env sh
 
-emacs -batch -l ert -l org-retro-test.el -f ert-run-tests-batch-and-exit
+emacs -batch \
+      --load=ert \
+      --load=org-retro-test.el \
+      --funcall ert-run-tests-batch-and-exit
