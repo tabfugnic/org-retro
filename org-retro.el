@@ -46,8 +46,10 @@
 
 (defun org-retro-increment-number-inline (&optional number)
   "Increment by NUMBER at the end of line.
-When this is the first attempt to increment,
-add NUMBER to the end of line with the format ' +NUMBER'.
+
+When first attempting to increment, add NUMBER to the end of line
+with the format ' +NUMBER'.
+
 If optional NUMBER is not provided, default to 1."
   (interactive)
   (or number (setq number 1))
@@ -69,7 +71,14 @@ If optional NUMBER is not provided, default to 1."
 
 (defun org-retro-presentation-toggle ()
   "Toggle presentation mode.
-Using text-scale increase text size by configurable amount.
+
+Using text-scale-mode increases text size by configurable amount.
+
+Checking this is done by looking at text-scale-mode-amount which
+is not set until it has been manipulated.  Check that beforehand
+to determine if it should go into presentation mode.  If it's set
+to zero then this is no longer in presentation mode.
+
 Default size increase is set to 4."
   (interactive)
   (if (or (not (boundp 'text-scale-mode-amount))(zerop text-scale-mode-amount))
