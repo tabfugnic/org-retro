@@ -35,16 +35,24 @@
 ; Customizable variables
 (defgroup org-retro nil
   "Settings for retrospectives."
-  :version "0.3.0"
+  :version "0.4.0"
   :group 'applications)
 
 (defcustom org-retro-presentation-scale 4
   "Set presentation height that allows better viewing on small screens."
   :type 'integer
-  :group 'retro)
+  :group 'org-retro)
+
+(defcustom org-retro-prefix-key (kbd "C-c 1")
+  "Allow for prefix keys."
+  :type 'string
+  :group 'org-retro)
 
 (define-derived-mode org-retro-mode org-mode "Retrospective"
   "Mode for making retrospectives easier to run.")
+
+(define-prefix-command 'org-retro-mode-map)
+(global-set-key org-retro-prefix-key org-retro-mode-map)
 
 (defun org-retro-increment-number-inline (&optional number)
   "Increment by NUMBER at the end of line.
@@ -182,14 +190,14 @@ Create file with date."
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
 (add-hook 'org-retro-mode-hook 'outline-show-all)
 
-(define-key org-retro-mode-map (kbd "C-u") 'org-retro-increment-number-inline)
-(define-key org-retro-mode-map (kbd "C-M-u") 'org-retro-increment-number-inline-by-amount)
-(define-key org-retro-mode-map (kbd "C-c r <return>") 'org-retro-presentation-toggle)
-(define-key org-retro-mode-map (kbd "C-c r n") 'org-retro-next-subtree)
-(define-key org-retro-mode-map (kbd "C-c r p") 'org-retro-previous-subtree)
-(define-key org-retro-mode-map (kbd "C-c r c") 'org-retro-clear-number)
-(define-key org-retro-mode-map (kbd "C-c r C") 'org-retro-clear)
-(define-key org-retro-mode-map (kbd "C-c r A") 'org-retro-archive)
+(define-key org-retro-mode-map (kbd "<return>") 'org-retro-presentation-toggle)
+(define-key org-retro-mode-map (kbd "n") 'org-retro-next-subtree)
+(define-key org-retro-mode-map (kbd "p") 'org-retro-previous-subtree)
+(define-key org-retro-mode-map (kbd "c") 'org-retro-clear-number)
+(define-key org-retro-mode-map (kbd "C") 'org-retro-clear)
+(define-key org-retro-mode-map (kbd "a") 'org-retro-archive)
+(define-key org-retro-mode-map (kbd "u") 'org-retro-increment-number-inline)
+(define-key org-retro-mode-map (kbd "M-u") 'org-retro-increment-number-inline-by-amount)
 
 (provide 'org-retro)
 
