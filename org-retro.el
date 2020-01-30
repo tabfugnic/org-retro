@@ -146,8 +146,41 @@ Signal when unable to move point in the direction."
        (not (string= (org-current-line-string) current-heading))
        (not (org-at-heading-p))))))
 
+(defun org-retro--cleanup ()
+  "Cleanup up buffer content.
+
+Clear content under each header unless a header has been tagged with :persist:.
+
+This is a helper function that is not called directly, but is
+instead used by other functions."
+  (let* ((data (org-element-parse-buffer)))
+    (org-element-map data 'headline
+      (lambda (element)
+
+        (when (not (equal (org-element-property :tags element) '("persist")))
+          (setf (nthcdr 2 element) nil))))
+    (org-element-interpret-data data)))
+
+(defun org-retro-clear ()
+  "Clear the current retro file."
+  (interactive)
+  (let ((content (org-retro--cleanup)))
+    (delete-region (point-min) (point-max))
+    (insert content)))
+
+(defun org-retro-archive ()
+  "Archive current for records and clear existing file.
+
+Create file with date."
+  (interactive)
+  (let ((file-sans-extension (file-name-sans-extension (buffer-file-name))))
+    (copy-file
+     (buffer-file-name)
+     (concat file-sans-extension "-" (format-time-string "%Y%m%d") ".retro"))
+    (org-retro-clear)))
 
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
+(add-hook 'org-retro-mode-hook 'outline-show-all)
 
 (define-key org-retro-mode-map (kbd "C-u") 'org-retro-increment-number-inline)
 (define-key org-retro-mode-map (kbd "C-M-u") 'org-retro-increment-number-inline-by-amount)
@@ -155,6 +188,8 @@ Signal when unable to move point in the direction."
 (define-key org-retro-mode-map (kbd "C-c r n") 'org-retro-next-subtree)
 (define-key org-retro-mode-map (kbd "C-c r p") 'org-retro-previous-subtree)
 (define-key org-retro-mode-map (kbd "C-c r c") 'org-retro-clear-number)
+(define-key org-retro-mode-map (kbd "C-c r C") 'org-retro-clear)
+(define-key org-retro-mode-map (kbd "C-c r A") 'org-retro-archive)
 
 (provide 'org-retro)
 

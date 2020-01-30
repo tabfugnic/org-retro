@@ -29,6 +29,7 @@
 
 (load-file "./org-retro.el")
 (require 'org)
+(require 'cl)
 (require 'org-retro)
 (require 'ert)
 
@@ -186,5 +187,50 @@
      (org-retro-first-subtree-p))
     (should
      (org-retro-last-subtree-p))))
+
+(ert-deftest org-retro-clear-test ()
+  (with-temp-buffer
+    (insert "* Joys\n- thing\n")
+    (org-retro-clear)
+    (should
+     (equal
+      (buffer-string)
+     "* Joys\n"))))
+
+(ert-deftest org-retro-clear-persist-tag-test ()
+  (with-temp-buffer
+    (insert "* Joys\n- thing\n* I love content :persist:\n- I am persist\n")
+    (setf org-tags-column 1)
+    (org-retro-clear)
+    (should
+     (equal
+      (buffer-string)
+      "* Joys\n* I love content :persist:\n- I am persist\n"))))
+
+(ert-deftest org-retro-archive-test ()
+  (cleanup-test-files
+   (lambda()
+     (cl-letf (((symbol-function 'buffer-file-name) (lambda() "test.retro")))
+     (with-temp-file "test.retro"
+       (insert "* Joys\n- thing\n"))
+     (with-temp-buffer
+       (insert-file-contents "test.retro" nil nil nil t)
+       (org-retro-archive)
+       (should
+        (equal
+         (buffer-string)
+         "* Joys\n"))
+       (insert-file-contents (concat "test-" (format-time-string "%Y%m%d") ".retro") nil nil nil t)
+       (should
+        (equal
+         (buffer-string)
+         "* Joys\n- thing\n")))))))
+
+(defun cleanup-test-files(func)
+  "Cleanup test files after calling FUNC."
+  (unwind-protect
+      (funcall func)
+    (dolist (file (file-expand-wildcards "test*.retro"))
+      (delete-file file))))
 
 ;;; org-retro-test.el ends here
