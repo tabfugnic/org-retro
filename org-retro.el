@@ -31,6 +31,7 @@
 ;;; Code:
 
 (require 'org)
+(require 'org-element)
 
 ; Customizable variables
 (defgroup org-retro nil

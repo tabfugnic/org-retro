@@ -1,3 +1,4 @@
+version: 2
 base_job: &base_job
   working_directory: "~/org-retro"
   steps:

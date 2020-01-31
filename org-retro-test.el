@@ -191,6 +191,7 @@
 (ert-deftest org-retro-clear-test ()
   (with-temp-buffer
     (insert "* Joys\n- thing\n")
+    (org-retro-mode)
     (org-retro-clear)
     (should
      (equal
@@ -201,6 +202,7 @@
   (with-temp-buffer
     (insert "* Joys\n- thing\n* I love content :persist:\n- I am persist\n")
     (setf org-tags-column 1)
+    (org-retro-mode)
     (org-retro-clear)
     (should
      (equal
@@ -210,10 +212,11 @@
 (ert-deftest org-retro-archive-test ()
   (cleanup-test-files
    (lambda()
-     (cl-letf (((symbol-function 'buffer-file-name) (lambda() "test.retro")))
+     (cl-letf (((symbol-function 'buffer-file-name) (lambda(&optional buffer) "test.retro")))
      (with-temp-file "test.retro"
        (insert "* Joys\n- thing\n"))
      (with-temp-buffer
+       (org-retro-mode)
        (insert-file-contents "test.retro" nil nil nil t)
        (org-retro-archive)
        (should
