@@ -165,9 +165,8 @@ instead used by other functions."
   (let* ((data (org-element-parse-buffer)))
     (org-element-map data 'headline
       (lambda (element)
-
         (when (not (equal (org-element-property :tags element) '("persist")))
-          (setf (nthcdr 2 element) nil))))
+          (org-element-set-contents element nil))))
     (org-element-interpret-data data)))
 
 (defun org-retro-clear ()
