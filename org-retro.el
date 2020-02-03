@@ -1,7 +1,7 @@
-;;; org-retro.el --- Make retros easier to run
+;;; org-retro.el --- Enhance orgmode for retrospectives
 
 ;; Author: Eric J. Collins <eric@tabfugni.cc>
-;; Version: 0.3.0
+;; Version: 0.5.0
 ;; Keywords: org, retro
 ;; URL: https://github.com/thoughtbot/org-retro/org-retro.el
 
@@ -9,9 +9,9 @@
 
 ;;; Commentary:
 
-;; 'org-retro' is software that helps you take full advantage of org
-;; mode while giving you more control on how it is presented.  This is
-;; heavily opinionated on how I personally run retrospectives.
+;; 'org-retro' is software that enhances orgmode so it can be used for
+;; running retrospectives.  While it attempts to be format agnostic, it
+;; is based off of how I personally run retrospectives.
 
 ;;; License:
 
@@ -36,7 +36,7 @@
 ; Customizable variables
 (defgroup org-retro nil
   "Settings for retrospectives."
-  :version "0.4.0"
+  :version "0.5.0"
   :group 'applications)
 
 (defcustom org-retro-presentation-scale 4
@@ -44,16 +44,29 @@
   :type 'integer
   :group 'org-retro)
 
-(defcustom org-retro-prefix-key (kbd "C-c 1")
+(defcustom org-retro-prefix-key (kbd "C-c ;")
   "Allow for prefix keys."
   :type 'string
   :group 'org-retro)
 
-(define-derived-mode org-retro-mode org-mode "Retrospective"
-  "Mode for making retrospectives easier to run.")
+(defvar org-retro-mode-map
+  (let ((map (make-sparse-keymap)) (prefix-map (make-sparse-keymap)))
+    (define-key prefix-map org-retro-prefix-key map)
+    (define-key map (kbd "<return>") 'org-retro-presentation-toggle)
+    (define-key map (kbd "n") 'org-retro-next-subtree)
+    (define-key map (kbd "p") 'org-retro-previous-subtree)
+    (define-key map (kbd "c") 'org-retro-clear-number)
+    (define-key map (kbd "C") 'org-retro-clear)
+    (define-key map (kbd "a") 'org-retro-archive)
+    (define-key map (kbd "u") 'org-retro-increment-number-inline)
+    (define-key map (kbd "M-u") 'org-retro-increment-number-inline-by-amount)
+    prefix-map)
+  "Prefix key map.")
 
-(define-prefix-command 'org-retro-mode-map)
-(global-set-key org-retro-prefix-key org-retro-mode-map)
+;;;###autoload
+(define-derived-mode org-retro-mode org-mode "Retrospective"
+  "Mode for making retrospectives easier to run.
+\\{org-retro-mode-map}")
 
 (defun org-retro-increment-number-inline (&optional number)
   "Increment by NUMBER at the end of line.
@@ -65,10 +78,10 @@ If optional NUMBER is not provided, default to 1."
   (interactive)
   (or number (setq number 1))
   (org-retro-goto-number (lambda()
-    (if (looking-at " \\+[0-9]+$")
-        (replace-match
-         (format " %+d" (+ number (string-to-number (match-string 0)))))
-      (org-retro-insert-number-at-end-of-line number)))))
+                           (if (looking-at " \\+[0-9]+$")
+                               (replace-match
+                                (format " %+d" (+ number (string-to-number (match-string 0)))))
+                             (org-retro-insert-number-at-end-of-line number)))))
 
 (defun org-retro-increment-number-inline-by-amount ()
   "Increment at the end of the line by input amount."
@@ -189,15 +202,6 @@ Create file with date."
 
 (setq auto-mode-alist (cons '("\\.retro$" . org-retro-mode) auto-mode-alist))
 (add-hook 'org-retro-mode-hook 'outline-show-all)
-
-(define-key org-retro-mode-map (kbd "<return>") 'org-retro-presentation-toggle)
-(define-key org-retro-mode-map (kbd "n") 'org-retro-next-subtree)
-(define-key org-retro-mode-map (kbd "p") 'org-retro-previous-subtree)
-(define-key org-retro-mode-map (kbd "c") 'org-retro-clear-number)
-(define-key org-retro-mode-map (kbd "C") 'org-retro-clear)
-(define-key org-retro-mode-map (kbd "a") 'org-retro-archive)
-(define-key org-retro-mode-map (kbd "u") 'org-retro-increment-number-inline)
-(define-key org-retro-mode-map (kbd "M-u") 'org-retro-increment-number-inline-by-amount)
 
 (provide 'org-retro)
 

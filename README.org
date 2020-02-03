@@ -10,11 +10,25 @@ experience and shortcuts to do basic tasks.
 Add =org-retro.el= to your load path and enable it.
 
 #+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/path/to/org-retro")
 (require 'org-retro)
 #+END_SRC
 
-Open any *.retro file
+** Usage
 
-** Configuration
+Open any =*.retro= file and it should automatically start org-retro-mode.
 
-TODO.
+Using the org-retro-prefix key(default: =C-c ;=) you can use the
+following commands:
+
+
+| Key                 | Description                                                                 |
+|---------------------+-----------------------------------------------------------------------------|
+| =<prefix> <return>= | Toggle between presentation mode                                            |
+| =<prefix> n=        | Navigate to next section, e.g. navigate to concerns                         |
+| =<prefix> p=        | Navigate to previous section                                                |
+| =<prefix> c=        | Clear plus numbers                                                          |
+| =<prefix> C=        | Clear entire documented except any sections that are tagged to be persisted |
+| =<prefix> a=        | Archive document by creating a dated copy and clearing the document         |
+| =<prefix> u=        | Increment +number by one                                                    |
+| =<prefix> U=        | Increment +number by requested amount                                       |
