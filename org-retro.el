@@ -49,6 +49,10 @@
   :type 'string
   :group 'org-retro)
 
+(defvar org-retro-increment-regexp
+  " [\-\\+][0-9]+$"
+  "Regular Expression to find incremented number at the end of a line.")
+
 (defvar org-retro-mode-map
   (let ((map (make-sparse-keymap)) (prefix-map (make-sparse-keymap)))
     (define-key prefix-map org-retro-prefix-key map)
@@ -78,7 +82,7 @@ If optional NUMBER is not provided, default to 1."
   (interactive)
   (or number (setq number 1))
   (org-retro-goto-number (lambda()
-                           (if (looking-at " \\+[0-9]+$")
+                           (if (looking-at org-retro-increment-regexp)
                                (replace-match
                                 (format " %+d" (+ number (string-to-number (match-string 0)))))
                              (org-retro-insert-number-at-end-of-line number)))))
@@ -94,14 +98,14 @@ If optional NUMBER is not provided, default to 1."
   (interactive)
   (org-retro-goto-number
    (lambda ()
-     (when (looking-at " \\+[0-9]+$")
+     (when (looking-at org-retro-increment-regexp)
        (replace-match "")))))
 
 (defun org-retro-goto-number (numfunc)
   "Execute NUMFUNC around work to get number."
   (let ((current-point (point)))
     (end-of-line)
-    (skip-chars-backward "+0-9")
+    (skip-chars-backward "-+0-9")
     (backward-char)
     (funcall numfunc)
     (goto-char current-point)))

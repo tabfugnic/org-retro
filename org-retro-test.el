@@ -132,6 +132,16 @@
       (thing-at-point 'line t)
       "foo 495 -1"))))
 
+(ert-deftest org-retro-increment-negative-number-back-into-positive-test ()
+  (with-temp-buffer
+    (insert "foo 495 -1")
+    (goto-char (point-min))
+    (org-retro-increment-number-inline 2)
+    (should
+     (equal
+      (thing-at-point 'line t)
+      "foo 495 +1"))))
+
 (ert-deftest org-retro-clear-number-test ()
   (with-temp-buffer
     (insert "foo 495 +1")
