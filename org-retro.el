@@ -67,10 +67,17 @@
     prefix-map)
   "Prefix key map.")
 
+(defface org-retro-increment-face
+  '((t (:weight ultra-bold :width semi-expanded)))
+  "Face used for incremented text at end of line.")
+
 ;;;###autoload
 (define-derived-mode org-retro-mode org-mode "Retrospective"
   "Mode for making retrospectives easier to run.
-\\{org-retro-mode-map}")
+\\{org-retro-mode-map}"
+  (font-lock-add-keywords
+   nil
+   `((,org-retro-increment-regexp . 'org-retro-increment-face))))
 
 (defun org-retro-increment-number-inline (&optional number)
   "Increment by NUMBER at the end of line.
